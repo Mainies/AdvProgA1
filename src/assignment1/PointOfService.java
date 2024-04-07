@@ -196,16 +196,18 @@ public class PointOfService {
 	                    System.out.println("Entered number cannot be negative. Please try again.");
 	                }
 	        	}
-	            this.soldItems.put("Meals", (this.soldItems.get("Meals") + quant));
-	            //this.soldItems.put("Burrito", (this.soldItems.get("Burrito") + quant));
-	            //this.soldItems.put("Soda", (this.soldItems.get("Soda") + quant));
-	            //this.soldItems.put("Fries", (this.soldItems.get("Fries") + quant));
+
+	            this.soldItems.put("Meals", (this.soldItems.get("Meals") + quant)); 
+	            
 	            int burrito = currentOrder.getBurritos() + quant;
 	            currentOrder.setBurritos(burrito);
+	            
 	            int fries = currentOrder.getFries() + quant;
-	            currentOrder.setBurritos(fries);
+	            currentOrder.setFries(fries);
+	            
 	            int soda = currentOrder.getSodas() + quant;
-	            currentOrder.setFries(soda);
+	            currentOrder.setSodas(soda);
+	            
 	            int meals = currentOrder.getMeals() + quant;
 	            currentOrder.setMeals(meals);   
 	        }

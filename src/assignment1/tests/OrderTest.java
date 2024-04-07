@@ -13,7 +13,7 @@ class OrderTest {
 
 	@BeforeEach
 	void setUpBeforeClass() throws Exception {
-		Order order = new Order(0, 0, 0);
+		order = new Order(0, 0, 0);
 	}
 
 

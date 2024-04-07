@@ -11,12 +11,6 @@ public class Order {
 	private int numSoda;
 	private int numMeals = 0;
 	
-	
-	public static void main(String args[]) {
-		Order myorder = new Order(3, 5, 2);
-		myorder.printOrder();
-	}
-	
 	public Order(int Burritos, int Fries, int Soda) {
 		//instantiates a new order to build on.
 		numBurritos = Burritos;
@@ -45,10 +39,10 @@ public class Order {
 		
 		else if (food.equals("4")) {
 			//caters for adding a meal (1x each food item)
-			this.numBurritos += 1;
-			this.numFries += 1;
-			this.numSoda += 1;
-			this.numMeals += 1;
+			this.numBurritos += number;
+			this.numFries += number;
+			this.numSoda += number;
+			this.numMeals += number;
 		}
 		else {
 			//adds soda
