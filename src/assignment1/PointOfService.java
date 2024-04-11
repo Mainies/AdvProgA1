@@ -14,6 +14,7 @@ public class PointOfService {
 	private Fries fries = new Fries();
 	private Soda soda = new Soda();
 	public double totalSales = 0.00;
+	
 	public HashMap<String, Integer> soldItems = new HashMap<String, Integer>();
 
 	
@@ -34,43 +35,50 @@ public class PointOfService {
 	public Burrito getBurrito() {
 		return this.burrito;
 	}
-	
+
 	public void openingHours(Kitchen kitchen) {
-		//Used to be an recursive function that continues during opening hours of the restaurant.
-		
+		/* Recursive menu calling function that calls an input handler and a function to take a valid input
+		and perform desired output */
 	    PointOfService pos = new PointOfService();
-	    boolean open = true;
-	    
-	    while (open) {
-	        String optionSelect;
-	        while(true) {
-	            try {
-	                pos.printMenu();
-	                optionSelect = PointOfService.readUserInput();
-	                PointOfService.validateMenuInput(optionSelect);
-	                break;
-	            } catch (MenuSelectException e) {
-	                System.out.println("Please enter a valid input.");
-	            }
-	        }
-	        switch (optionSelect) {
-		        case "a":
-		        	pos.orderFood(kitchen);
-		        	break;
-		        case "b":
-		            pos.printSales();
-		            break;
-		        case "c":
-		        	pos.updatePrice();
-		        	break;
-		        default:
-		            open = false;
-		            break;
-		        }
-	    	}
-	    pos.closingTime(kitchen);
+	    boolean isOpen = true;
+	    while (isOpen) {
+	            String optionSelect = getValidMenuOption(pos);
+	            isOpen = doSelectedOption(optionSelect, pos, kitchen);
+	    }
+	    pos.closingTime(kitchen); //
 	}
-	
+
+	private String getValidMenuOption(PointOfService pos) {
+	    while (true) {
+	        try {
+	            pos.printMenu();
+	            String optionSelect = PointOfService.readUserInput();
+	            PointOfService.validateMenuInput(optionSelect);
+	            return optionSelect;
+	        } catch (MenuSelectException e) {
+	            System.out.println("Please enter a valid input.");
+	        }
+	    }
+	}
+
+	private boolean doSelectedOption(String optionSelect, PointOfService pos, Kitchen kitchen) {
+		// Switch currently capable of Building an Order, Printing Sales Report, Update Prices
+	    switch (optionSelect) {
+	    case "a":
+	        pos.orderFood(kitchen);
+	        return true;
+	    case "b":
+	        pos.printSales();
+	        return true;
+	    case "c":
+	        pos.updatePrice();
+	        return true;
+	    default:
+	    	//case when "d" to exit loop
+	        return false;
+	    }
+	}
+
 	private void orderFood(Kitchen kitchen) {
 		//Takes an order and returns the cooking time.
 		try {
@@ -129,7 +137,7 @@ public class PointOfService {
 		return currentOrder;
 	}
 	
-	private int getQuantity() {
+	public int getQuantity() {
 		// Gets quantity of food item required by user and holds methods for handling input exceptions.
 	    String input;
 	    int quantity;
@@ -151,73 +159,66 @@ public class PointOfService {
 	    }
 	    return quantity;
 	}
-	
-	public Order buildOrder() {
-		/* Large method that allows a user to recursively input different food items and quantities.
-		 * Adds multiple items to an order and returns and Order object.
-		 */
-		
-	    boolean complete = true;
-	    Order currentOrder = this.newOrder();
-	    while (complete) {
-	        String option;
-	        this.printOrderOptions();
+
+	 public Order buildOrder() {
+	        Order currentOrder = new Order(0, 0, 0);  
+	        boolean complete = false;
+	        while (!complete) {
+	            printOrderOptions();
+	            String option = getUserFoodSelection();
+	            if (option.equals("5")) { 
+	                complete = true;
+	            } else {
+	                processOrderItem(option, currentOrder); 
+	            }
+	        }
+	        return currentOrder;
+	    }
+
+	    private String getUserFoodSelection() {
 	        while (true) {
 	            try {
-	                option = PointOfService.readUserInput();
-	                PointOfService.validateFoodInput(option);
-	                break;
+	                String option = readUserInput(); 
+	                validateFoodInput(option); 
+	                return option;
 	            } catch (FoodSelectException e) {
-	                System.out.println("Please enter the correct corresponding number.");
+	                System.out.println("Invalid selection. Please enter the correct corresponding number.");
 	            }
-	        }
-	        if (option.equals("5")) {
-	            complete = false;
-	            break;
-	        }
-	        int quant = 0;
-	        if (!option.equals("4")) {
-	        	while (true) {
-	                try {
-	                    quant = this.getQuantity();
-	                    PointOfService.negativeInput(quant);
-	                    break; 
-	                } catch (InvalidNegativeNumber e) {
-	                    System.out.println("Entered number cannot be negative. Please try again.");
-	                }
-	            }
-	        } else if (option.equals("4")) {
-	        	while (true) {
-	                try {
-	                    quant = this.getQuantity();
-	                    PointOfService.negativeInput(quant);
-	                    break; 
-	                } catch (InvalidNegativeNumber e) {
-	                    System.out.println("Entered number cannot be negative. Please try again.");
-	                }
-	        	}
-
-	            this.soldItems.put("Meals", (this.soldItems.get("Meals") + quant)); 
-	            
-	            int burrito = currentOrder.getBurritos() + quant;
-	            currentOrder.setBurritos(burrito);
-	            
-	            int fries = currentOrder.getFries() + quant;
-	            currentOrder.setFries(fries);
-	            
-	            int soda = currentOrder.getSodas() + quant;
-	            currentOrder.setSodas(soda);
-	            
-	            int meals = currentOrder.getMeals() + quant;
-	            currentOrder.setMeals(meals);   
-	        }
-	        if (!option.equals("4") && !option.equals("5")) {
-	            currentOrder.addToOrder(option, quant);
 	        }
 	    }
-	    return currentOrder;
-	}
-	
+
+	    private void processOrderItem(String option, Order currentOrder) {
+	        if (option.equals("4")) { 
+	            handleMealItem(currentOrder);
+	        } else {
+	            int quantity = getValidQuantity();
+	            currentOrder.addToOrder(option, quantity);
+	        }
+	    }
+
+	    private void handleMealItem(Order currentOrder) {
+	        int quantity = getValidQuantity();
+	        updateMealItems(quantity, currentOrder);
+	    }
+
+	    private int getValidQuantity() {
+	        while (true) {
+	            try {
+	                int quantity = getQuantity(); 
+	                validateQuantity(quantity); 
+	                return quantity;
+	            } catch (InvalidNegativeNumber | NotWholeNumber e) {
+	                System.out.println(e.getMessage() + " Please enter a positive whole number.");
+	            }
+	        }
+	    }
+
+	    private void updateMealItems(int quantity, Order currentOrder) {
+	        currentOrder.setBurritos(currentOrder.getBurritos() + quantity);
+	        currentOrder.setFries(currentOrder.getFries() + quantity);
+	        currentOrder.setSodas(currentOrder.getSodas() + quantity);
+	        currentOrder.setMeals(currentOrder.getMeals() + quantity);
+	    }
 	
 	private double checkout(Order order) {
 		//Calculates total price for current sale.
@@ -256,51 +257,59 @@ public class PointOfService {
 	}
 	
 	public void updatePrice() {
-		//Method to update price of individual food item. Recursive until valid inputs are met.
-		String option;
-		Double correctprice;
-		
-		while (true) {
-            try {
-            	this.printFoodOptions();
-            	option = PointOfService.readUserInput();
-                PointOfService.validateFoodUpdate(option);
-                break;
-            } catch (NotAFoodItem e) {
-                System.out.println("Please enter the correct corresponding number.");
-	            }
-	        }
-		
-		while (true) {
-            try {
-                System.out.println("Please enter the new price: ");
-            	String price = PointOfService.readUserInput();
-                PointOfService.validateNumber(price);
-                correctprice = Double.parseDouble(price);
-                PointOfService.negativeInput(correctprice);
-                break; 
-            } catch (NotANumberException e) {
-            	System.out.println("Please enter a valid number.");
-            } catch (InvalidNegativeNumber e) {
-                System.out.println("Entered number cannot be negative. Please try again.");
-            	}   
-			}
-		
-		switch (option) {
-		case "1":
-			this.burrito.setPrice(correctprice);
-			break;
-		case "2":
-			this.fries.setPrice(correctprice);
-			break;
-		case "3":
-			this.soda.setPrice(correctprice);
-			break;
-		default:
-			System.out.println("Invalid food selection.");
-			this.updatePrice();
-		}
+	    String option = getValidFoodOption();
+	    double correctPrice = getValidPrice();
+
+	    updateFoodPrice(option, correctPrice);
 	}
+
+	private String getValidFoodOption() {
+	    while (true) {
+	        try {
+	            this.printFoodOptions();
+	            String option = PointOfService.readUserInput();
+	            PointOfService.validateFoodUpdate(option);
+	            return option;
+	        } catch (NotAFoodItem e) {
+	            System.out.println("Please enter the correct corresponding number.");
+	        }
+	    }
+	}
+
+	private double getValidPrice() {
+	    while (true) {
+	        try {
+	            System.out.println("Please enter the new price: ");
+	            String price = PointOfService.readUserInput();
+	            PointOfService.validateNumber(price);
+	            double correctPrice = Double.parseDouble(price);
+	            PointOfService.negativeInput(correctPrice);
+	            return correctPrice;
+	        } catch (NotANumberException e) {
+	            System.out.println("Please enter a valid number.");
+	        } catch (InvalidNegativeNumber e) {
+	            System.out.println("Entered number cannot be negative. Please try again.");
+	        }
+	    }
+	}
+
+	private void updateFoodPrice(String option, double correctPrice) {
+	    switch (option) {
+	    case "1":
+	        this.burrito.setPrice(correctPrice);
+	        break;
+	    case "2":
+	        this.fries.setPrice(correctPrice);
+	        break;
+	    case "3":
+	        this.soda.setPrice(correctPrice);
+	        break;
+	    default:
+	        System.out.println("Invalid food selection.");
+	        updatePrice(); // Consider removing this recursive call if possible, or replacing with a different strategy.
+	    }
+	}
+
 	
 	private void closingTime(Kitchen kitchen) {
 		//Method for closing Point of Service and restaurant. Prints fries in kitchen and outputs final sales total.
@@ -357,14 +366,13 @@ public class PointOfService {
 	}
 	
 	
-	// Exceptions Section
+	// Exceptions Handling Section
 	
 	public static void validateMenuInput(String input) throws MenuSelectException{
 	    if (!input.matches("[abcdeABCDE]")) {
 	        throw new MenuSelectException(input);
 	    }
 	}
-	
 	
 	public static void validateFoodInput(String input) throws FoodSelectException{
 		if (!input.matches("[12345]")) {
@@ -406,6 +414,11 @@ public class PointOfService {
 	        Double.parseDouble(input);
 	    } catch (NumberFormatException e) {throw new NotANumberException(input);}
 	}
+	
+    public void validateQuantity(int quantity) throws InvalidNegativeNumber, NotWholeNumber {
+        negativeInput(quantity); 
+        wholeNumber(quantity);  
+    }
 
 	
 }	

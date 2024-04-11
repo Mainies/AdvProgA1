@@ -1,15 +1,13 @@
 package assignment1.tests;
 
 import assignment1.*;
+import org.junit.*;
+import static org.junit.Assert.*;
 
-import static org.junit.jupiter.api.Assertions.*;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-class KitchenTest{
+public class KitchenTest{
 	Kitchen kitchen = new Kitchen();
 	
-	@BeforeEach
+	@Before
 	public void setUp(){
 		Kitchen kitchen = new Kitchen();
 		kitchen.cooked.clear();
@@ -19,56 +17,55 @@ class KitchenTest{
 	}
 	
 	@Test
-    void kitchenStartsWithNoFoodCooked() {
-        assertEquals(0, kitchen.cooked.get("Fries"));
-        assertEquals(0, kitchen.cooked.get("Burritos"));
-        assertEquals(0, kitchen.cooked.get("Soda"));
+    public void kitchenStartsWithNoFoodCooked() {
+        assertEquals(0, (int) kitchen.cooked.get("Fries"));
+        assertEquals(0, (int) kitchen.cooked.get("Burritos"));
+        assertEquals(0, (int) kitchen.cooked.get("Soda"));
         System.out.println("EmptyKitchenPass");
     }
     
 	@Test
-    void cookTimeForMoreBurritos(){
+    public void cookTimeForMoreBurritos(){
         Order order = new Order(3, 2, 0);
         int expectedFriesCookTime = 8;
         int expectedBurritosCookTime = 18;
         int cookTime = kitchen.cookTime(order);
 
-        assertEquals(Math.max(expectedFriesCookTime, expectedBurritosCookTime), cookTime, "Expected Equal CookTime");
+        assertEquals((int) Math.max(expectedFriesCookTime, expectedBurritosCookTime), cookTime);
         System.out.println("Cook OrderTime Burritos Correct");
     }
 	
 	@Test
-    void cookTimeForMoreFries(){
+    public void cookTimeForMoreFries(){
         Order order = new Order(1, 6, 0);
         int expectedFriesCookTime = 16;
         int expectedBurritosCookTime = 9;
         int cookTime = kitchen.cookTime(order);
 
-        assertEquals(Math.max(expectedFriesCookTime, expectedBurritosCookTime), cookTime, "Expected Equal CookTime");
+        assertEquals((int) Math.max(expectedFriesCookTime, expectedBurritosCookTime), cookTime);
         System.out.println("Cook OrderTime Fries Correct");
     }
 	
 	@Test
-    void checkLeftOverFries(){
+    public void checkLeftOverFries(){
         Order order = new Order(3, 2, 0);
         int cookTime = kitchen.cookTime(order);
-        assertEquals(kitchen.cooked.get("Fries"), 3, "Cooked Fries not Entered Properly");
+        assertEquals((int) kitchen.cooked.get("Fries"), 3);
     }
 	
 	@Test
-    void cookTimeWithFries(){
+    public void cookTimeWithFries(){
 		kitchen.cooked.put("Fries", 2);
         Order order = new Order(0, 2, 0);
         int expectedFriesCookTime = 0;
         int expectedBurritosCookTime = 0;
         int cookTime = kitchen.cookTime(order);
-
-        assertEquals(Math.max(expectedFriesCookTime, expectedBurritosCookTime), cookTime, "Expected Equal CookTime");
+        assertEquals((int) Math.max(expectedFriesCookTime, expectedBurritosCookTime), cookTime);
         System.out.println("Fries Tray with Cooking TimeSuccessful");
 	}
 	
     @Test
-    void endOfDayReportsLeftoverFriesCorrectly() {
+    public void endOfDayReportsLeftoverFriesCorrectly() {
         kitchen.cooked.put("Fries", 5); 
         int leftovers = kitchen.endOfDay();
         assertEquals(5, leftovers);
