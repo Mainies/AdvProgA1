@@ -15,6 +15,7 @@ import java.io.PrintStream;
 
 public class PointOfServiceTest {
 	private PointOfService pos = new PointOfService();
+
 	
 	@Before
 	public void setUp() {
@@ -38,7 +39,7 @@ public class PointOfServiceTest {
 	Order order = new Order(1, 1, 1);
 	pos.updatePOS(order);
 	assertEquals((int) pos.soldItems.get("Fries"), 1);
-	//assertEquals(pos.totalSales, 15.0);
+	assertEquals(pos.totalSales, 15.0, 0.00001);
 	}
 	
 	@Test
@@ -46,7 +47,7 @@ public class PointOfServiceTest {
 		pos.getBurrito().setPrice(5);
 		Order order = new Order(1, 0, 0);
 		pos.updatePOS(order);
-		//assertEquals((int) pos.totalSales, 5.0);
+		assertEquals(pos.totalSales, 5.0, 0.00001);
 	}
 	
 	@Test
@@ -57,20 +58,19 @@ public class PointOfServiceTest {
 		pos.getBurrito().setPrice(5);
 		order = new Order(1, 0, 0);
 		pos.updatePOS(order);
-		//assertEquals(pos.totalSales, 20.0);
+		assertEquals(pos.totalSales, 20.0, 000001);
 		assertEquals((int) pos.soldItems.get("Burrito"), 2);
 	}
 	
-	@Test
+	@Test (expected = NotANumberException.class)
     public void testValidateNumberThrowsException() throws Exception{
-        assertThrows(NotANumberException.class, () -> {
-            PointOfService.validateNumber("not a number");
-        });
+        PointOfService.validateNumber("not a number");
     }
 	
 	
 	@Test
     public void testValidateMenuInput() throws Exception{
+		//validate the menu input for 3 different cases
         assertThrows(MenuSelectException.class, () -> {
             PointOfService.validateMenuInput("not a number");
         });
@@ -78,6 +78,7 @@ public class PointOfServiceTest {
             PointOfService.validateMenuInput("f");
         });
         assertThrows(MenuSelectException.class, () -> {
+        	//number not in a menu range
             PointOfService.validateMenuInput("7");
         });
 	}
@@ -86,12 +87,12 @@ public class PointOfServiceTest {
 	public void testGetQuantity() {
         String simulatedUserInput = "5\n"; // User inputs '5' as the quantity
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        System.setOut(new PrintStream(out));
+        System.setOut(new PrintStream(out)); //avoid the output printing statement pausing at the next function
         System.setIn(new ByteArrayInputStream(simulatedUserInput.getBytes()));
         int result = pos.getQuantity();
         assertEquals(5, result);
     }
-   
+
 	
 	@After
 	public void tearDown() {

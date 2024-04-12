@@ -21,7 +21,7 @@ public class KitchenTest{
         assertEquals(0, (int) kitchen.cooked.get("Fries"));
         assertEquals(0, (int) kitchen.cooked.get("Burritos"));
         assertEquals(0, (int) kitchen.cooked.get("Soda"));
-        System.out.println("EmptyKitchenPass");
+        System.out.println("New Opened Kitchen is Empty and Passes OH&S Standards");
     }
     
 	@Test

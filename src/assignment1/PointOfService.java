@@ -16,7 +16,6 @@ public class PointOfService {
 	public double totalSales = 0.00;
 	
 	public HashMap<String, Integer> soldItems = new HashMap<String, Integer>();
-
 	
 	public PointOfService() {
 		//At instantiation, no items are sold.
@@ -126,17 +125,10 @@ public class PointOfService {
 	}
 	
 	public static String readUserInput() {
-		// Best practice as commented by lab workshop. Makes it easy to reuse scanner.
-		Scanner sc = new Scanner(System.in);
-		return sc.nextLine().toLowerCase();
+		Scanner scanner = new Scanner(System.in);
+		return scanner.nextLine().toLowerCase();
 	}
-	
-	private Order newOrder() {
-		// Creates a new order with no items sold
-		Order currentOrder = new Order(0, 0, 0);
-		return currentOrder;
-	}
-	
+
 	public int getQuantity() {
 		// Gets quantity of food item required by user and holds methods for handling input exceptions.
 	    String input;
@@ -175,51 +167,51 @@ public class PointOfService {
 	        return currentOrder;
 	    }
 
-	    private String getUserFoodSelection() {
-	        while (true) {
-	            try {
-	                String option = readUserInput(); 
-	                validateFoodInput(option); 
-	                return option;
-	            } catch (FoodSelectException e) {
-	                System.out.println("Invalid selection. Please enter the correct corresponding number.");
-	            }
-	        }
-	    }
+    private String getUserFoodSelection() {
+        while (true) {
+            try {
+                String option = readUserInput(); 
+                validateFoodInput(option); 
+                return option;
+            } catch (FoodSelectException e) {
+                System.out.println("Invalid selection. Please enter the correct corresponding number.");
+            }
+        }
+    }
 
-	    private void processOrderItem(String option, Order currentOrder) {
-	        if (option.equals("4")) { 
-	            handleMealItem(currentOrder);
-	        } else {
-	            int quantity = getValidQuantity();
-	            currentOrder.addToOrder(option, quantity);
-	        }
-	    }
+    private void processOrderItem(String option, Order currentOrder) {
+        if (option.equals("4")) { 
+            handleMealItem(currentOrder);
+        } else {
+            int quantity = getValidQuantity();
+            currentOrder.addToOrder(option, quantity);
+        }
+    }
 
-	    private void handleMealItem(Order currentOrder) {
-	        int quantity = getValidQuantity();
-	        updateMealItems(quantity, currentOrder);
-	    }
+    private void handleMealItem(Order currentOrder) {
+        int quantity = getValidQuantity();
+        updateMealItems(quantity, currentOrder);
+    }
 
-	    private int getValidQuantity() {
-	        while (true) {
-	            try {
-	                int quantity = getQuantity(); 
-	                validateQuantity(quantity); 
-	                return quantity;
-	            } catch (InvalidNegativeNumber | NotWholeNumber e) {
-	                System.out.println(e.getMessage() + " Please enter a positive whole number.");
-	            }
-	        }
-	    }
+    private int getValidQuantity() {
+        while (true) {
+            try {
+                int quantity = getQuantity(); 
+                validateQuantity(quantity); 
+                return quantity;
+            } catch (InvalidNegativeNumber | NotWholeNumber e) {
+                System.out.println(e.getMessage() + " Please enter a positive whole number.");
+            }
+        }
+    }
 
-	    private void updateMealItems(int quantity, Order currentOrder) {
-	        currentOrder.setBurritos(currentOrder.getBurritos() + quantity);
-	        currentOrder.setFries(currentOrder.getFries() + quantity);
-	        currentOrder.setSodas(currentOrder.getSodas() + quantity);
-	        currentOrder.setMeals(currentOrder.getMeals() + quantity);
-	    }
-	
+    private void updateMealItems(int quantity, Order currentOrder) {
+        currentOrder.setBurritos(currentOrder.getBurritos() + quantity);
+        currentOrder.setFries(currentOrder.getFries() + quantity);
+        currentOrder.setSodas(currentOrder.getSodas() + quantity);
+        currentOrder.setMeals(currentOrder.getMeals() + quantity);
+    }
+
 	private double checkout(Order order) {
 		//Calculates total price for current sale.
 		double sale = 0.00;

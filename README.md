@@ -1,3 +1,10 @@
+Usage:
+run Main.java to run application.
+
+Libraries Used:
+* JRE System Library [17.0.9]
+* JUnit 4
+
 Functionality:
 * Object Oriented Design (Part B)
 * Sufficient Unit Tests created
@@ -13,8 +20,13 @@ Functionality:
 * Correct cooking time calculations
 * Ongoing memory of cooked fries, correct cooking time calculations with held fries and correct return of wasted fries on close.
 
+Various Testing Methods implemented (14-total):
+* various Assert statements conducive to method logic
+* Before and After methods succesfully implemented
+* Succesful test demonstrating usage of ByteArrayInputStream, changing System.in and System.out
+* Successful tests for expected exception throws
 
-Design:
+Design Description:
 
 Food is an abstract class that is extended by Burrito, Soda and Fries. This was done to implement polymorphism into the design.
 Order is an abstract data type that is build through user input via the Point of Service. It maintains the quantity of Burritos, fries, sodas and meals.
