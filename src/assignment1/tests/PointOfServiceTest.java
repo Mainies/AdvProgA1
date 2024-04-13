@@ -23,23 +23,23 @@ public class PointOfServiceTest {
 		pos = new PointOfService();
 	}
 
-	//update sale
 	@Test
 	public void updateSalesTestmeal() {
 		//check update sales with a meal
 		Order order = new Order(1, 1, 1, 1);
 		pos.updatePOS(order);
 		assertEquals((int) pos.soldItems.get("Fries"), 1);
-		//assertEquals(pos.totalSales, 12.0);
+		assertEquals((int) pos.soldItems.get("Meals"), 1);
+		assertEquals(pos.totalSales, 12.0, 0.00001);
 	}
 	
 	@Test
 	public void updateSalesTestnoMeal(){
-	//check update sales without a meal
-	Order order = new Order(1, 1, 1);
-	pos.updatePOS(order);
-	assertEquals((int) pos.soldItems.get("Fries"), 1);
-	assertEquals(pos.totalSales, 15.0, 0.00001);
+		//check update sales without a meal
+		Order order = new Order(1, 1, 1);
+		pos.updatePOS(order);
+		assertEquals((int) pos.soldItems.get("Fries"), 1);
+		assertEquals(pos.totalSales, 15.0, 0.00001);
 	}
 	
 	@Test
@@ -92,7 +92,6 @@ public class PointOfServiceTest {
         int result = pos.getQuantity();
         assertEquals(5, result);
     }
-
 	
 	@After
 	public void tearDown() {

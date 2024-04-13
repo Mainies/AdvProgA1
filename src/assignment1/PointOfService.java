@@ -98,6 +98,7 @@ public class PointOfService {
 		this.soldItems.put("Fries", (this.soldItems.get("Fries") + order.getFries()));
 		this.soldItems.put("Burrito", (this.soldItems.get("Burrito") + order.getBurritos()));
 		this.soldItems.put("Soda", (this.soldItems.get("Soda") + order.getSodas()));
+		this.soldItems.put("Meals", (this.soldItems.get("Meals") + order.getMeals()));
 	}
 	
 
